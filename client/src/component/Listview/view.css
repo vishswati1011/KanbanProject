@@ -1,0 +1,61 @@
+.parent {
+    position: absolute;
+    width: 50%;
+    height: 500px;
+    left: 20%;
+    top: 30%;
+    transform: translateY(-30%);
+    box-sizing: border-box;
+    padding: 30px;
+    overflow-x: scroll;
+    background: #ffffff;
+    white-space: nowrap;
+}
+
+.child {
+    width: 200px;
+    height: 100%;
+    margin-right: 30px;
+    padding: 25px;
+    box-sizing: border-box;
+    background: #ffffff;
+    border: 1px solid rgb(210, 210, 210);
+    display: inline-block;
+    border-radius: 10px;
+}
+
+.child {
+    width: 200px;
+    height: 100%;
+    margin-right: 30px;
+    padding: 25px;
+    box-sizing: border-box;
+    background: #ffffff;
+    border: 1px solid rgb(210, 210, 210);
+    display: inline-block;
+    border-radius: 10px;
+}
+
+
+.child_card {
+    border: 1px solid rgb(210, 210, 210);
+    border-radius: 5px;
+    width: 150px;
+    height: 80px;
+    padding: 5px;
+}
+
+.title_card{
+    margin-bottom: 15px;
+}
+.add_more_button2 {
+    width: 150px;
+    margin-top: -200px;
+    display: inline-block;
+}
+
+.add_more_button {
+    width: 150px;
+    margin-top: 10px;
+    display: inline-block;
+}
