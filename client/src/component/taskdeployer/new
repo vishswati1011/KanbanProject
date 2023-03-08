@@ -18,7 +18,7 @@ const TaskCard = () => {
   const [tasks, setTasks] = useState(initialTasks);
   const [editingTaskIndex, setEditingTaskIndex] = useState(null);
   const [editedTask, setEditedTask] = useState("");
-  const [bucket, setBuckets] = useState([]);
+  const [buckets, setBuckets] = useState([]);
   const [cards, setCards] = useState([]);
 
   const handleEditClick = (index) => {
@@ -70,7 +70,7 @@ const TaskCard = () => {
     );
     console.log("update", cards)
   }
-  const handleDragEnd1 = async({ destination, source }) => {
+  const handleDragEnd1 = ({ destination, source }) => {
 
 
     console.log("source", source, "dest", destination)
@@ -80,36 +80,22 @@ const TaskCard = () => {
     if (destination) {
       //👇🏻 Gets the item that was dragged
 
-      const sourceItem = bucket.find(
-        obj => obj._id === source.droppableId
+      const existingCartItem = tasks.find(
+        obj => obj.title === source.droppableId
       );
-      console.log("sourceItem",sourceItem)
       //👇🏻 Gets the item that was dragged
       const itemMoved = {
-        ...sourceItem.cards[source.index],
+        ...existingCartItem.items[source.index],
       };
       //👇🏻 Removes the item from the its source
-      sourceItem.cards.splice(source.index, 1)
+      existingCartItem.items.splice(source.index, 1)
       console.log("itemMoved", itemMoved)
 
       // //👇🏻 Add the item to its destination using its destination index
-      bucket.map((obj) =>
-        obj._id === destination.droppableId ?
-          obj.cards.splice(destination.index, 0, itemMoved) : obj
+      tasks.map((obj) =>
+        obj.title === destination.droppableId ?
+          obj.items.splice(destination.index, 0, itemMoved) : obj
       );
-      console.log("bucket",bucket)
-
-      try{
-        let payload ={
-          source:source,
-          destination:destination
-        }
-        const response = await axios.post("http://localhost:8082/api/taskdeployer/card/dndCard",payload)
-        console.log()
-        alert(response.data.message)
-      }catch{
-        alert("error in update card")
-      }
     }
   };
   const handleSaveClick = () => {
@@ -132,13 +118,13 @@ const TaskCard = () => {
     console.log("response", response.data.allcards)
     setBuckets(response.data.allcards)
 
-    // try {
-    //   const response = await axios.get("http://localhost:8082/api/taskdeployer/card/getCardByBoardId/6408730e9f2243cb3bdcccbe");
-    //   console.log("response card", response.data.allcards)
-    //   setCards(response.data.allcards)
-    // } catch (error) {
-    //   console.log("error in get card")
-    // }
+    try {
+      const response = await axios.get("http://localhost:8082/api/taskdeployer/card/getCardByBoardId/6408730e9f2243cb3bdcccbe");
+      console.log("response card", response.data.allcards)
+      setCards(response.data.allcards)
+    } catch (error) {
+      console.log("error in get card")
+    }
   }
   const handleDeleteClick = (index) => {
     const updatedTasks = tasks.filter((task, i) => i !== index);
@@ -192,66 +178,37 @@ const TaskCard = () => {
 
   const dragBucketStart = (e, position) => {
     dragBucketItem.current = position;
-    // console.log(e.target.innerHTML);
+    console.log(e.target.innerHTML);
   };
 
   const dragBucketEnter = (e, position) => {
     dragBucketOverItem.current = position;
-    // console.log(e.target.innerHTML);
+    console.log(e.target.innerHTML);
   };
 
-  const dropBucket =async (e) => {
+  const dropBucket = (e) => {
     console.log("id", dragBucketOverItem.current, dragBucketItem.current)
-    const copyListItems = [...bucket];
+    const copyListItems = [...buckets];
     const dragItemContent = copyListItems[dragBucketItem.current];
-    const dest = copyListItems[dragBucketOverItem.current];
-
-    const src=copyListItems.splice(dragBucketItem.current, 1);
-    console.log("src",dragItemContent)
+    copyListItems.splice(dragBucketItem.current, 1);
     copyListItems.splice(dragBucketOverItem.current, 0, dragItemContent);
-    console.log("dest",dest)
-   
-   
+    dragBucketItem.current = null;
+    dragBucketOverItem.current = null;
     setBuckets(copyListItems)
-
-   
-    try{
-      let payload =
-      [
-        {
-          id:dragItemContent._id,
-          index:dragBucketOverItem.current,
-        },
-        {
-          id:dest._id,
-          index:dragBucketItem.current
-        }
-      ]
-      console.log("payload",payload)
-      dragBucketItem.current = null;
-      dragBucketOverItem.current = null;
-
-      const response = await axios.post("http://localhost:8082/api/taskdeployer/bucket/dndBucket",payload)
-      alert(response.data.message)
-    }catch{
-      alert("error in update bucket")
-    }
-
-
   };
 
 
 
-console.log("bucket",bucket)
+console.log("bucket",buckets)
   return (
     <>
       <div
         className="p-3 container-fluid horizontal-scrollable "
       >
         <div className="row">
-          <DragDropContext onDragEnd={handleDragEnd1}>
+          <DragDropContext onDragEnd={handleDragEnd}>
 
-            {bucket && bucket.map((bucket, index) =>
+            {buckets && buckets.map((bucket, index) =>
             (
 
               <div className="col-xs-6 col-sm-3 col-md-3 col-3">
@@ -265,21 +222,25 @@ console.log("bucket",bucket)
                   >
                     <h3 className="list-title"> {bucket.bucketName}</h3>
                     <div className={`kanban__container`}>
-                      <Droppable droppableId={bucket._id}>
+                 
+                       {console.log("bucket",bucket)}
+                      <Droppable droppableId={bucket.bucketName}>
                         {(provided) => (
                           <>
                             <div
                               ref={provided.innerRef}
                               {...provided.droppableProps}
                             >
-                  {bucket && bucket.cards.map((item, index) => (
-                             
+                  
+                          
                                   <Draggable
                                     key={item._id}
                                     draggableId={item._id}
                                     index={index}
                                   >
                                     {(provided) => (
+
+                                      bucket.cards.map((item,index)=>(
 
 
                                       <div
@@ -290,14 +251,15 @@ console.log("bucket",bucket)
                                       >
                                         <ul className="">{item.cardTitle}</ul>
                                       </div>
-                                    )}
+                                      )))}
                                   </Draggable>
-                      ))}
+                                
                               {provided.placeholder}
                             </div>
                           </>
                         )}
                       </Droppable>
+                   
                     </div>
                     <button
                       type="button"
