@@ -5,7 +5,13 @@ import ListKanban from "./component/Listview/ListKanban";
 import Login from "../src/component/Login";
 import Listview from "../src/component/Listview/Listview"
 import View from "../src/component/Listview/view"
+import Taskdeployer from '../src/component/taskdeployer/Task'
+import ArraylistDrag from '../src/component/taskdeployer/ArraylistDrag'
+
 import Kanban from '../src/component/kanban/Task'
+import TaskCard from "./component/taskdeployer/TaskCard1";
+
+
 
 function App() {
     return (
@@ -16,8 +22,13 @@ function App() {
                 <Route path='/list' element={<ListKanban/>} />
                 <Route path='/view' element={<View />} />
                
-                <Route path='/tasks' element={<Task />} />
-                <Route path='/kanban' element={<Kanban />} />
+                {/* <Route path='/tasks' element={<Task />} /> */}
+                {/* <Route path='/kanban' element={<Kanban />} /> */}
+                <Route path='/taskdeployer' element={<Taskdeployer />} />
+                <Route path='/dnd' element={<ArraylistDrag />} />
+                <Route path='/taskcard' element={<TaskCard />} />
+
+
 
 
                 <Route path='/comments/:category/:id' element={<Comments />} />
