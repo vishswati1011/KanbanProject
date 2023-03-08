@@ -10,6 +10,8 @@ import AddNewCardModal from './addNewCardModal'
 const TasksContainer = () => {
     const [tasks, setTasks] = useState(Data);
     const [show,setShow]= useState(false);
+    const [showlane,setShowlane]= useState(false);
+
     const [allTask,setAllTask]=useState({});
     const [title,setTitle]= useState();
     const [column,setColumn]=useState();
@@ -95,13 +97,13 @@ const TasksContainer = () => {
      /> :null} 
         <div className='container'>
             
-            {show ?<>
+            {showlane ?<>
              <input type="text" 
                value={title}
                onChange={(e)=>setTitle(e.target.value)}/>
                <button onClick={(e)=>handleAddTitle(e)}>ADD</button></>
             :<button 
-               onClick={()=>setShow(!show)}
+               onClick={()=>setShowlane(!show)}
                > Add more </button>
             }
         <DragDropContext onDragEnd={handleDragEnd}>
@@ -110,8 +112,9 @@ const TasksContainer = () => {
                     className={`kanban__wrapper`}
                     key={index}
                 >
-                    <h3>{task.title} Tasks</h3>
-                    <div className={`kanban__container`}>
+                    
+                <h3>{task.title} Tasks</h3>     {/*  bucket name*/ }
+                    <div className={`kanban__container`}>    
                         <Droppable droppableId={task.title}>
                             {(provided) => (
                                 <>
