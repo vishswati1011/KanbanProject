@@ -25,6 +25,7 @@ const TasksContainer = () => {
     }
     //👇🏻 This function is the value of the onDragEnd prop
     const handleDragEnd = ({ destination, source }) => {
+        console.log(source,"dest",destination)
         if (!destination) return;
         if (destination.index === source.index &&
             destination.droppableId === source.droppableId) return;
@@ -103,7 +104,7 @@ const TasksContainer = () => {
                onChange={(e)=>setTitle(e.target.value)}/>
                <button onClick={(e)=>handleAddTitle(e)}>ADD</button></>
             :<button 
-               onClick={()=>setShowlane(!show)}
+               onClick={()=>setShowlane(!showlane)}
                > Add more </button>
             }
         <DragDropContext onDragEnd={handleDragEnd}>
